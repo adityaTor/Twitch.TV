@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" type="text/css" href="twitchStyle.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script>
+	$(document).ready(function(){
+
+		var users = ["riotgames","HearthstoneFR","FreeCodeCamp","Rush", "syndicate", "esl_csgo", "nightblue3","summit1g"];
+		function online(data,user){
+			$(".container").append('<div class="online row">' +
+							'<div class="col-xs-1 userLogo">' +
+							'<img class="img-circle img-responsive" src="' + data.stream.channel["logo"] + '" >' +
+							'</div>' + 
+							'<div class="col-xs-3">' +
+							'<p>'+'<a href="'+data.stream.channel["url"]+'">'+data.stream.channel["display_name"]+'</a>'+'</p>'+
+							'</div>' +
+							'<div class="col-xs-5">' +
+							'<p>'+data.stream["game"]+'</p>' +
+							'</div>' +
+							'<div class="col-xs-3">' +
+							'<p>'+data.stream["viewers"] +" viewers"+'</p>' +
+							'</div>' +
+							'</div>');
+							
+		}
+
+		function offline(data,user){
+			$.ajax({
+				type: "GET",
+  				dataType: "json",
+  				url: "https://api.twitch.tv/kraken/channels/" + user ,
+  				headers: {
+  				'Client-ID': '27oizkewo25aob05ovb5qkzmkni2y0t'
+  				},
+  				success: function(data,user){
+  					$(".container").append('<div class="offline row">' + 
+							'<div class="col-xs-1 userLogo">' +
+							'<img class="img-circle img-responsive" src="' + data.logo + '" >' +
+							'</div>' +
+							'<div class="col-xs-3">' +
+							'<p>'+data.display_name+'</p>'+
+							'</div>' +
+							'<div class="col-xs-5">' +
+							'<p>'+'<i>'+"Offline"+'</i>'+'</p>' +
+							'</div>' +
+							'</div>');
+  				}
+
+			});
+		}
+
+		function twitchData(users){
+			users.forEach(function(element) {
+    		$.ajax({
+				type: "GET",
+  				dataType: "json",
+  				url: "https://api.twitch.tv/kraken/streams/" + element,
+  				headers: {
+  				'Client-ID': '27oizkewo25aob05ovb5qkzmkni2y0t'
+  				},
+  				success: function(data){
+  					if(data.stream !== null ){
+  						online(data, element);
+  					}else{offline(data,element);}
+  				}
+  				});
+			});
+		}
+		twitchData(users);
+	});
+	</script>
+</head>
+<body>
+	<div class="container">
+		<div class="page-header">
+			<h1>TWITCH.TV</h1>
+		</div>
+	<a href=""></a>
+	<i></i>
+	</div>
+</body>
+</html>
